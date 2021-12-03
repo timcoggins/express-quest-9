@@ -31,7 +31,13 @@ const validateBody = (body) => {
  * GET all movies
  */
 const getAllMovies = async (req, res) => {
-    const data = await Movies.getAllMovies();
+
+    let filter = {}
+
+    if(req.query.color) filter.color = req.query.color
+    if(req.query.max_duration) filter.max_duration = req.query.max_duration
+
+    const data = await Movies.getAllMovies(filter);
     if(data.length) {
         res.status(200).json(data)
     } else {

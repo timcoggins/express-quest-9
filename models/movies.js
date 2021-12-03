@@ -1,8 +1,21 @@
 const connection = require('../db-config');
 
 // Get all of the movies
-const getAllMovies = async () => {
-    return await connection.promise().query('SELECT * FROM movies')
+const getAllMovies = async ({ color, max_duration }) => {
+
+    let sql = 'SELECT * FROM movies';
+    const sqlValues = [];
+    if (color) {
+        sql += ' WHERE color = ?';
+        sqlValues.push(color);
+    }
+    if (max_duration) {
+        if (color) sql += ' AND duration <= ? ;';
+        else sql += ' WHERE duration <= ?';
+        sqlValues.push(max_duration);
+    }
+
+    return await connection.promise().query(sql, sqlValues)
         .then(([results, fields]) => results)
 }
 
